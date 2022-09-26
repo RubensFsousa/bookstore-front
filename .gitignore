@@ -1,5 +1,5 @@
 .DS_Store
-.pretticerrc.json
+/.pretticerrc.json
 node_modules
 /dist
 
