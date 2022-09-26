@@ -1,15 +1,15 @@
 <template>
     <v-app id="app">
-        <Book></Book>
+        <Rent></Rent>
     </v-app>
 </template>
 
 <script>
-import Book from '../components/Book.vue';
+import Rent from '../components/Rent.vue';
 export default {
     data: () => ({}),
     components: {
-        Book
+        Rent
     }
 };
 </script>

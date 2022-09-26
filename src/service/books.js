@@ -1,12 +1,23 @@
-import { http } from "@/service/config"
+import { http } from '@/service/config';
 
 export default {
-
-    getAllBooks:() => {
-        return http.get('BookStore')
+    getAllBooks: () => {
+        return http.get('BookStore');
     },
 
-    createBook:(book) => {
-        return http.post('BookStore')
+    getOneBook: (id) => {
+        return http.get(`BookStore/${id}`);
+    },
+
+    createBook: (data) => {
+        return http.post('BookStore', data);
+    },
+
+    updateBook: (data, id) => {
+        return http.put(`BookStore/${id}`, data);
+    },
+
+    deleteBook: (id) => {
+        return http.delete(`BookStore/${id}`);
     }
-}
+};

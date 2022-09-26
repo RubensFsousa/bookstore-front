@@ -1,15 +1,15 @@
 <template>
     <v-app id="app">
-        <Book></Book>
+        <Publisher></Publisher>
     </v-app>
 </template>
 
 <script>
-import Book from '../components/Book.vue';
+import Publisher from '../components/Publisher.vue';
 export default {
     data: () => ({}),
     components: {
-        Book
+        Publisher
     }
 };
 </script>
