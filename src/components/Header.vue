@@ -1,6 +1,6 @@
 <template>
     <v-app-bar app elevation="14" color="#1F1F1F" flat>
-        <v-tabs centered class="ml-n9" color="#FF0038">
+        <v-tabs centered class="ml-n9" color="#FF0024" dark>
             <v-tab v-for="item in items" :key="item.title" :to="item.to">
                 <v-icon size="25px">
                     {{ item.icon }}

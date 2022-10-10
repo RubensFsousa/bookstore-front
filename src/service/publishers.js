@@ -13,7 +13,7 @@ export default {
         return http.post('Publisher', data);
     },
 
-    updatePublisher: (data, id) => {
+    updatePublisher: (id, data) => {
         return http.put(`Publisher/${id}`, data);
     },
 

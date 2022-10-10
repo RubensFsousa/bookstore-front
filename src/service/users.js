@@ -13,7 +13,7 @@ export default {
         return http.post('Users', data);
     },
 
-    updateUser: (data, id) => {
+    updateUser: (id, data) => {
         return http.put(`Users/${id}`, data);
     },
 

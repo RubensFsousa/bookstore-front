@@ -13,7 +13,7 @@ export default {
         return http.post('BookStore', data);
     },
 
-    updateBook: (data, id) => {
+    updateBook: (id, data) => {
         return http.put(`BookStore/${id}`, data);
     },
 

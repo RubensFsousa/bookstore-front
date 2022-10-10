@@ -13,8 +13,12 @@ export default {
         return http.post('Rent', data);
     },
 
-    updateRent: (data, id) => {
+    updateRent: (id, data) => {
         return http.put(`Rent/${id}`, data);
+    },
+
+    devolution: (id) => {
+        return http.put(`Rent/Devolution/${id}`);
     },
 
     deleteRent: (id) => {
