@@ -134,7 +134,13 @@
                                                 dark
                                             ></v-text-field>
                                         </template>
-                                        <v-date-picker v-model="date" scrollable locale="pt-br" color="#ff0025">
+                                        <v-date-picker
+                                            v-model="date"
+                                            scrollable
+                                            locale="pt-br"
+                                            color="#ff0025"
+                                            :max="date"
+                                        >
                                             <v-spacer></v-spacer>
                                             <v-btn text color="#ff0025" @click="$refs.menu.save(date)"> OK </v-btn>
                                         </v-date-picker>
@@ -162,7 +168,13 @@
                                                 dark
                                             ></v-text-field>
                                         </template>
-                                        <v-date-picker v-model="date2" scrollable locale="pt-br" color="#ff0025">
+                                        <v-date-picker
+                                            v-model="date2"
+                                            scrollable
+                                            locale="pt-br"
+                                            color="#ff0025"
+                                            :min="date"
+                                        >
                                             <v-spacer></v-spacer>
                                             <v-btn text color="#ff0025" @click="$refs.menu2.save(date2)"> OK </v-btn>
                                         </v-date-picker>
@@ -236,7 +248,7 @@ export default {
 
     filters: {
         FormatDate: (date) => {
-            return moment(date).format('DD/MM/YYYY');
+            return moment(date).subtract(1, 'months').format('DD/MM/YYYY');
         }
     },
 
@@ -250,8 +262,8 @@ export default {
                 console.log(response.data.content);
                 this.rents = response.data.content;
                 this.rents.forEach((item) => {
-                    this.dateFormated1 = moment(item.rentDate).format('DD/MM/YYYY');
-                    this.dateFormated2 = moment(item.rentPredict).format('DD/MM/YYYY');
+                    this.dateFormated1 = moment(item.rentDate).subtract(1, 'months').format('DD/MM/YYYY');
+                    this.dateFormated2 = moment(item.rentPredict).subtract(1, 'months').format('DD/MM/YYYY');
 
                     return (item.rentDate = this.dateFormated1), (item.rentPredict = this.dateFormated2);
                 });

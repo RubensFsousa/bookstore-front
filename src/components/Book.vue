@@ -125,7 +125,13 @@
                                                 dark
                                             ></v-text-field>
                                         </template>
-                                        <v-date-picker v-model="date" scrollable locale="pt-br" color="#ff0025">
+                                        <v-date-picker
+                                            v-model="date"
+                                            scrollable
+                                            locale="pt-br"
+                                            color="#ff0025"
+                                            :max="date"
+                                        >
                                             <v-spacer></v-spacer>
                                             <v-btn text color="#ff0025" @click="$refs.dialog.save(date)"> OK </v-btn>
                                         </v-date-picker>
@@ -159,7 +165,7 @@
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="#ff0025" text @click="dialog = false"> Cancelar </v-btn>
+                        <v-btn color="#ff0025" text @click="close()"> Cancelar </v-btn>
                         <v-btn color="#ff0025" text @click="this.createBook"> Salvar </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -198,8 +204,8 @@
                                 </v-col>
                                 <v-col cols="12">
                                     <v-dialog
-                                        ref="dialog"
-                                        :return-value.sync="date"
+                                        ref="dialog2"
+                                        :return-value.sync="date2"
                                         persistent
                                         width="290px"
                                         color="#ff0025"
@@ -207,7 +213,7 @@
                                     >
                                         <template v-slot:activator="{ on, attrs }">
                                             <v-text-field
-                                                v-model="date"
+                                                v-model="date2"
                                                 label="Data de lançamento"
                                                 append-icon="mdi-calendar"
                                                 readonly
@@ -218,9 +224,15 @@
                                                 dark
                                             ></v-text-field>
                                         </template>
-                                        <v-date-picker v-model="date" scrollable locale="pt-br" color="#ff0025">
+                                        <v-date-picker
+                                            v-model="date2"
+                                            scrollable
+                                            locale="pt-br"
+                                            color="#ff0025"
+                                            :max="date"
+                                        >
                                             <v-spacer></v-spacer>
-                                            <v-btn text color="#ff0025" @click="$refs.dialog.save(date)"> OK </v-btn>
+                                            <v-btn text color="#ff0025" @click="$refs.dialog2.save(date2)"> OK </v-btn>
                                         </v-date-picker>
                                     </v-dialog>
                                 </v-col>
@@ -294,7 +306,8 @@ export default {
         publishers: [],
         dateFormated: [],
 
-        date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().substr(0, 10),
+        date: new Date().toISOString().substr(0, 10),
+        date2: new Date().toISOString().substr(0, 10),
         modal: false,
         dialog: false,
         dialog2: false,
@@ -325,11 +338,10 @@ export default {
     methods: {
         listTable() {
             BookStore.getAllBooks().then((response) => {
-                console.log(response.data);
+                console.log(response);
                 this.books = response.data.content;
                 this.books.forEach((book) => {
-                    this.dateFormated = moment(book.launchDate).format('DD/MM/YYYY');
-
+                    this.dateFormated = moment(book.launchDate).subtract(1, 'months').format('DD/MM/YYYY');
                     return (book.launchDate = this.dateFormated);
                 });
             }),
@@ -341,11 +353,13 @@ export default {
 
         createBook() {
             this.date;
+            console.log(this.book);
             this.book.launchDate = moment(this.date).format('DD/MM/YYYY');
             BookStore.createBook(this.book)
                 .then((response) => {
+                    console.log(this.book);
                     this.listTable();
-                    this.dialog = false;
+                    this.close();
                     this.$swal({ title: 'Livro Cadastrado', icon: 'success', background: '#1f1f1f' });
                 })
                 .catch((e) => {
@@ -367,7 +381,8 @@ export default {
                 amount: this.editedBook.amount,
                 publisherId: this.editedBook.publisher.id
             };
-            book.launchDate = moment(this.date).format('DD/MM/YYYY');
+            this.date2;
+            book.launchDate = moment(this.date2).format('DD/MM/YYYY');
             console.log(this.editedBook, this.editIndex);
             BookStore.updateBook(this.editIndex, book)
                 .then((response) => {
@@ -435,6 +450,17 @@ export default {
             this.editedBook = Object.assign({}, item);
             this.dialogDelete = true;
             this.deleteConfirm();
+        },
+
+        close() {
+            this.dialog = false;
+            this.book = {
+                name: '',
+                author: '',
+                launchDate: '',
+                amount: '',
+                publisherId: ''
+            };
         }
     }
 };
