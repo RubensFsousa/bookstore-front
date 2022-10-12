@@ -130,7 +130,7 @@
                                             scrollable
                                             locale="pt-br"
                                             color="#ff0025"
-                                            :max="date"
+                                            :max="dateNow"
                                         >
                                             <v-spacer></v-spacer>
                                             <v-btn text color="#ff0025" @click="$refs.dialog.save(date)"> OK </v-btn>
@@ -308,6 +308,7 @@ export default {
 
         date: new Date().toISOString().substr(0, 10),
         date2: new Date().toISOString().substr(0, 10),
+        dateNow: new Date().toISOString().substr(0, 10),
         modal: false,
         dialog: false,
         dialog2: false,

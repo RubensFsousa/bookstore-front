@@ -139,7 +139,7 @@
                                             scrollable
                                             locale="pt-br"
                                             color="#ff0025"
-                                            :max="date"
+                                            :max="dateNow"
                                         >
                                             <v-spacer></v-spacer>
                                             <v-btn text color="#ff0025" @click="$refs.menu.save(date)"> OK </v-btn>
@@ -173,7 +173,7 @@
                                             scrollable
                                             locale="pt-br"
                                             color="#ff0025"
-                                            :min="date"
+                                            :min="dateNow"
                                         >
                                             <v-spacer></v-spacer>
                                             <v-btn text color="#ff0025" @click="$refs.menu2.save(date2)"> OK </v-btn>
@@ -220,6 +220,7 @@ export default {
 
         date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().substr(0, 10),
         date2: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().substr(0, 10),
+        dateNow: new Date().toISOString().substr(0, 10),
         menu: false,
         menu2: false,
         modal: false,
