@@ -340,7 +340,6 @@ export default {
         },
 
         createBook() {
-            console.log(this.book);
             this.date;
             this.book.launchDate = moment(this.date).format('DD/MM/YYYY');
             BookStore.createBook(this.book)
@@ -350,8 +349,10 @@ export default {
                     this.$swal({ title: 'Livro Cadastrado', icon: 'success', background: '#1f1f1f' });
                 })
                 .catch((e) => {
+                    console.log(e);
                     this.$swal({
                         title: 'Erro ao Cadastrar Livro',
+                        text: e.response.data.message,
                         icon: 'error',
                         background: '#1f1f1f'
                     });
