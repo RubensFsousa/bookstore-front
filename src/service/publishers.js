@@ -2,22 +2,22 @@ import { http } from '@/service/config';
 
 export default {
     getAllPublishers: () => {
-        return http.get('Publisher');
+        return http.get('publisher');
     },
 
     getOnePublisher: (id) => {
-        return http.get(`Publisher/${id}`);
+        return http.get(`publisher/${id}`);
     },
 
     createPublisher: (data) => {
-        return http.post('Publisher', data);
+        return http.post('publisher', data);
     },
 
     updatePublisher: (id, data) => {
-        return http.put(`Publisher/${id}`, data);
+        return http.put(`publisher/${id}`, data);
     },
 
     deletePublisher: (id) => {
-        return http.delete(`Publisher/${id}`);
+        return http.delete(`publisher/${id}`);
     }
 };
