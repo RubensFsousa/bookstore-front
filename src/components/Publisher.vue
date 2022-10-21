@@ -19,6 +19,7 @@
                         </v-card-title>
                         <v-data-table
                             id="dados"
+                            sort-by="id"
                             :headers="headers"
                             :items="publishers"
                             :items-per-page="5"
@@ -80,35 +81,37 @@
                     </v-card-title>
                     <v-card-text>
                         <v-container>
-                            <v-row>
-                                <v-col cols="12">
-                                    <v-text-field
-                                        label="Nome da editora"
-                                        v-model="publisher.name"
-                                        append-icon="mdi-book"
-                                        color="#ff0025"
-                                        :rules="[rules.required, rules.max, rules.min]"
-                                        :counter="30"
-                                        dark
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col cols="12">
-                                    <v-text-field
-                                        label="Cidade"
-                                        v-model="publisher.city"
-                                        append-icon="mdi-city-variant"
-                                        color="#ff0025"
-                                        :rules="[rules.required, rules.max, rules.min]"
-                                        :counter="30"
-                                        dark
-                                    ></v-text-field>
-                                </v-col>
-                            </v-row>
+                            <v-form ref="form" lazy-validation>
+                                <v-row>
+                                    <v-col cols="12">
+                                        <v-text-field
+                                            label="Nome da editora"
+                                            v-model="publisher.name"
+                                            append-icon="mdi-book"
+                                            color="#ff0025"
+                                            :rules="[rules.required, rules.max, rules.min]"
+                                            :counter="30"
+                                            dark
+                                        ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12">
+                                        <v-text-field
+                                            label="Cidade"
+                                            v-model="publisher.city"
+                                            append-icon="mdi-city-variant"
+                                            color="#ff0025"
+                                            :rules="[rules.required, rules.max, rules.min]"
+                                            :counter="30"
+                                            dark
+                                        ></v-text-field>
+                                    </v-col>
+                                </v-row>
+                            </v-form>
                         </v-container>
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="#ff0010" text @click="dialog = false"> Cancelar </v-btn>
+                        <v-btn color="#ff0010" text @click="close()"> Cancelar </v-btn>
                         <v-btn color="#ff0010" text @click="this.createPublisher"> Salvar </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -122,30 +125,32 @@
                     </v-card-title>
                     <v-card-text>
                         <v-container>
-                            <v-row>
-                                <v-col cols="12">
-                                    <v-text-field
-                                        label="Nome da editora"
-                                        v-model="editedPublisher.name"
-                                        append-icon="mdi-book"
-                                        color="#ff0025"
-                                        :rules="[rules.required, rules.max, rules.min]"
-                                        :counter="30"
-                                        dark
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col cols="12">
-                                    <v-text-field
-                                        label="Cidade"
-                                        v-model="editedPublisher.city"
-                                        append-icon="mdi-city-variant"
-                                        color="#ff0025"
-                                        :rules="[rules.required, rules.max, rules.min]"
-                                        :counter="30"
-                                        dark
-                                    ></v-text-field>
-                                </v-col>
-                            </v-row>
+                            <v-form ref="form2" lazy-validation>
+                                <v-row>
+                                    <v-col cols="12">
+                                        <v-text-field
+                                            label="Nome da editora"
+                                            v-model="editedPublisher.name"
+                                            append-icon="mdi-book"
+                                            color="#ff0025"
+                                            :rules="[rules.required, rules.max, rules.min]"
+                                            :counter="30"
+                                            dark
+                                        ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12">
+                                        <v-text-field
+                                            label="Cidade"
+                                            v-model="editedPublisher.city"
+                                            append-icon="mdi-city-variant"
+                                            color="#ff0025"
+                                            :rules="[rules.required, rules.max, rules.min]"
+                                            :counter="30"
+                                            dark
+                                        ></v-text-field>
+                                    </v-col>
+                                </v-row>
+                            </v-form>
                         </v-container>
                     </v-card-text>
                     <v-card-actions>
@@ -209,20 +214,22 @@ export default {
         },
 
         createPublisher() {
-            Publisher.createPublisher(this.publisher)
-                .then(() => {
-                    this.listTable();
-                    this.dialog = false;
-                    this.$swal({ title: 'Editora Cadastrada', icon: 'success', background: '#1f1f1f' });
-                })
-                .catch((e) => {
-                    this.$swal({
-                        title: 'Erro ao Cadastrar Editora',
-                        text: e.response.data.message,
-                        icon: 'error',
-                        background: '#1f1f1f'
+            if (this.$refs.form.validate()) {
+                Publisher.createPublisher(this.publisher)
+                    .then(() => {
+                        this.listTable();
+                        this.close();
+                        this.$swal({ title: 'Editora Cadastrada', icon: 'success', background: '#1f1f1f' });
+                    })
+                    .catch((e) => {
+                        this.$swal({
+                            title: 'Erro ao Cadastrar Editora',
+                            text: e.response.data.message,
+                            icon: 'error',
+                            background: '#1f1f1f'
+                        });
                     });
-                });
+            }
         },
 
         updatePublisher() {
@@ -291,7 +298,7 @@ export default {
         editItem(item) {
             this.editIndex = item.id;
             this.editedPublisher = Object.assign({}, item);
-            this.listTable();
+            this.$refs.form2.resetValidation();
         },
 
         deleteItem(item) {
@@ -301,34 +308,13 @@ export default {
             this.deleteConfirm();
         },
 
-        deleteItemConfirm() {
-            this.books.splice(this.editedIndex, 1);
-            this.closeDelete();
-        },
-
         close() {
             this.dialog = false;
-            this.$nextTick(() => {
-                this.editedBook = Object.assign({}, this.defaultItem);
-                this.editedIndex = -1;
-            });
-        },
-
-        closeDelete() {
-            this.dialogDelete = false;
-            this.$nextTick(() => {
-                this.editedBook = Object.assign({}, this.defaultItem);
-                this.editedIndex = -1;
-            });
-        },
-
-        save() {
-            if (this.editedIndex > -1) {
-                Object.assign(this.books[this.editedIndex], this.editedBook);
-            } else {
-                this.books.push(this.editedBook);
-            }
-            this.close();
+            this.publisher = {
+                name: '',
+                city: ''
+            };
+            this.$refs.form.resetValidation();
         }
     }
 };

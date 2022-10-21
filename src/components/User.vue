@@ -19,6 +19,7 @@
                         </v-card-title>
                         <v-data-table
                             id="dados"
+                            sort-by="id"
                             :headers="headers"
                             :items="users"
                             :items-per-page="5"
@@ -80,46 +81,48 @@
                     </v-card-title>
                     <v-card-text>
                         <v-container>
-                            <v-row>
-                                <v-col cols="12">
-                                    <v-text-field
-                                        label="Nome do leitor"
-                                        append-icon="mdi-account"
-                                        v-model="user.name"
-                                        color="#ff0025"
-                                        :rules="[rules.required, rules.max, rules.min]"
-                                        :counter="30"
-                                        dark
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col cols="12">
-                                    <v-text-field
-                                        label="Cidade"
-                                        append-icon="mdi-city-variant"
-                                        v-model="user.city"
-                                        color="#ff0025"
-                                        :rules="[rules.required, rules.max, rules.min]"
-                                        :counter="30"
-                                        dark
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col cols="12">
-                                    <v-text-field
-                                        label="Endereço"
-                                        append-icon="mdi-home-account"
-                                        v-model="user.address"
-                                        color="#ff0025"
-                                        :rules="[rules.required, rules.max, rules.min]"
-                                        :counter="30"
-                                        dark
-                                    ></v-text-field>
-                                </v-col>
-                            </v-row>
+                            <v-form ref="form" lazy-validation>
+                                <v-row>
+                                    <v-col cols="12">
+                                        <v-text-field
+                                            label="Nome do leitor"
+                                            append-icon="mdi-account"
+                                            v-model="user.name"
+                                            color="#ff0025"
+                                            :rules="[rules.required, rules.max, rules.min]"
+                                            :counter="30"
+                                            dark
+                                        ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12">
+                                        <v-text-field
+                                            label="Cidade"
+                                            append-icon="mdi-city-variant"
+                                            v-model="user.city"
+                                            color="#ff0025"
+                                            :rules="[rules.required, rules.max, rules.min]"
+                                            :counter="30"
+                                            dark
+                                        ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12">
+                                        <v-text-field
+                                            label="Endereço"
+                                            append-icon="mdi-home-account"
+                                            v-model="user.address"
+                                            color="#ff0025"
+                                            :rules="[rules.required, rules.max, rules.min]"
+                                            :counter="30"
+                                            dark
+                                        ></v-text-field>
+                                    </v-col>
+                                </v-row>
+                            </v-form>
                         </v-container>
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="#ff0025" text @click="dialog = false"> Cancelar </v-btn>
+                        <v-btn color="#ff0025" text @click="close()"> Cancelar </v-btn>
                         <v-btn color="#ff0025" text @click="this.createUser"> Salvar </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -133,41 +136,43 @@
                     </v-card-title>
                     <v-card-text>
                         <v-container>
-                            <v-row>
-                                <v-col cols="12">
-                                    <v-text-field
-                                        label="Nome do leitor"
-                                        append-icon="mdi-account"
-                                        v-model="editedUser.name"
-                                        color="#ff0025"
-                                        :rules="[rules.required, rules.max, rules.min]"
-                                        :counter="30"
-                                        dark
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col cols="12">
-                                    <v-text-field
-                                        label="Cidade"
-                                        append-icon="mdi-city-variant"
-                                        v-model="editedUser.city"
-                                        color="#ff0025"
-                                        :rules="[rules.required, rules.max, rules.min]"
-                                        :counter="30"
-                                        dark
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col cols="12">
-                                    <v-text-field
-                                        label="Endereço"
-                                        append-icon="mdi-home-account"
-                                        v-model="editedUser.address"
-                                        color="#ff0025"
-                                        :rules="[rules.required, rules.max, rules.min]"
-                                        :counter="30"
-                                        dark
-                                    ></v-text-field>
-                                </v-col>
-                            </v-row>
+                            <v-form ref="form2" lazy-validation>
+                                <v-row>
+                                    <v-col cols="12">
+                                        <v-text-field
+                                            label="Nome do leitor"
+                                            append-icon="mdi-account"
+                                            v-model="editedUser.name"
+                                            color="#ff0025"
+                                            :rules="[rules.required, rules.max, rules.min]"
+                                            :counter="30"
+                                            dark
+                                        ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12">
+                                        <v-text-field
+                                            label="Cidade"
+                                            append-icon="mdi-city-variant"
+                                            v-model="editedUser.city"
+                                            color="#ff0025"
+                                            :rules="[rules.required, rules.max, rules.min]"
+                                            :counter="30"
+                                            dark
+                                        ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12">
+                                        <v-text-field
+                                            label="Endereço"
+                                            append-icon="mdi-home-account"
+                                            v-model="editedUser.address"
+                                            color="#ff0025"
+                                            :rules="[rules.required, rules.max, rules.min]"
+                                            :counter="30"
+                                            dark
+                                        ></v-text-field>
+                                    </v-col>
+                                </v-row>
+                            </v-form>
                         </v-container>
                     </v-card-text>
                     <v-card-actions>
@@ -234,20 +239,22 @@ export default {
         },
 
         createUser() {
-            User.createUser(this.user)
-                .then(() => {
-                    this.listTable();
-                    this.dialog = false;
-                    this.$swal({ title: 'Leitor Cadastrado', icon: 'success', background: '#1f1f1f' });
-                })
-                .catch((e) => {
-                    this.$swal({
-                        title: 'Erro ao Cadastrar Leitor',
-                        text: e.response.data.message,
-                        icon: 'error',
-                        background: '#1f1f1f'
+            if (this.$refs.form.validate()) {
+                User.createUser(this.user)
+                    .then(() => {
+                        this.listTable();
+                        this.close();
+                        this.$swal({ title: 'Leitor Cadastrado', icon: 'success', background: '#1f1f1f' });
+                    })
+                    .catch((e) => {
+                        this.$swal({
+                            title: 'Erro ao Cadastrar Leitor',
+                            text: e.response.data.message,
+                            icon: 'error',
+                            background: '#1f1f1f'
+                        });
                     });
-                });
+            }
         },
 
         updateUser() {
@@ -316,6 +323,7 @@ export default {
         editItem(item) {
             this.editIndex = item.id;
             this.editedUser = Object.assign({}, item);
+            this.$refs.form2.resetValidation();
         },
 
         deleteItem(item) {
@@ -323,6 +331,16 @@ export default {
             this.editedUser = Object.assign({}, item);
             this.dialogDelete = true;
             this.deleteConfirm();
+        },
+
+        close() {
+            this.dialog = false;
+            this.user = {
+                name: '',
+                city: '',
+                address: ''
+            };
+            this.$refs.form.resetValidation();
         }
     }
 };

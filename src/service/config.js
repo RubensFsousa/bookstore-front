@@ -1,5 +1,5 @@
 import axios from 'axios';
 
 export const http = axios.create({
-    baseURL: 'https://api-spring-bookstore.herokuapp.com/'
+    baseURL: 'https://lib-api-spring.loca.lt/'
 });

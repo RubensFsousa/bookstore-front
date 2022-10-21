@@ -19,6 +19,7 @@
                         </v-card-title>
                         <v-data-table
                             id="dados"
+                            sort-by="id"
                             :headers="headers"
                             :items="books"
                             :items-per-page="5"
@@ -80,87 +81,91 @@
                     </v-card-title>
                     <v-card-text>
                         <v-container>
-                            <v-row>
-                                <v-col cols="12">
-                                    <v-text-field
-                                        label="Nome do livro"
-                                        v-model="book.name"
-                                        append-icon="mdi-book"
-                                        color="#ff0025"
-                                        :rules="[rules.required, rules.max, rules.min]"
-                                        :counter="30"
-                                        dark
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col cols="12">
-                                    <v-text-field
-                                        v-model="book.author"
-                                        label="autor"
-                                        append-icon="mdi-account"
-                                        color="#ff0025"
-                                        :rules="[rules.required, rules.max, rules.min]"
-                                        :counter="30"
-                                        dark
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col cols="12">
-                                    <v-dialog
-                                        ref="dialog"
-                                        :return-value.sync="date"
-                                        persistent
-                                        width="290px"
-                                        color="#ff0025"
-                                        dark
-                                    >
-                                        <template v-slot:activator="{ on, attrs }">
-                                            <v-text-field
-                                                v-model="date"
-                                                label="Data de lançamento"
-                                                append-icon="mdi-calendar"
-                                                readonly
-                                                v-bind="attrs"
-                                                v-on="on"
-                                                color="#ff0010"
-                                                :rules="[rules.required]"
-                                                dark
-                                            ></v-text-field>
-                                        </template>
-                                        <v-date-picker
-                                            v-model="date"
-                                            scrollable
-                                            locale="pt-br"
+                            <v-form ref="form" lazy-validation>
+                                <v-row>
+                                    <v-col cols="12">
+                                        <v-text-field
+                                            label="Nome do livro"
+                                            v-model="book.name"
+                                            append-icon="mdi-book"
                                             color="#ff0025"
-                                            :max="dateNow"
+                                            :rules="[rules.required, rules.max, rules.min]"
+                                            :counter="30"
+                                            dark
+                                        ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12">
+                                        <v-text-field
+                                            v-model="book.author"
+                                            label="autor"
+                                            append-icon="mdi-account"
+                                            color="#ff0025"
+                                            :rules="[rules.required, rules.max, rules.min]"
+                                            :counter="30"
+                                            dark
+                                        ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12">
+                                        <v-dialog
+                                            ref="dialog"
+                                            :return-value.sync="date"
+                                            persistent
+                                            width="290px"
+                                            color="#ff0025"
+                                            dark
                                         >
-                                            <v-spacer></v-spacer>
-                                            <v-btn text color="#ff0025" @click="$refs.dialog.save(date)"> OK </v-btn>
-                                        </v-date-picker>
-                                    </v-dialog>
-                                </v-col>
-                                <v-col cols="12">
-                                    <v-select
-                                        :items="publishers"
-                                        label="Editora"
-                                        item-text="name"
-                                        item-value="id"
-                                        v-model="book.publisherId"
-                                        :rules="[rules.required]"
-                                        dark
-                                    >
-                                    </v-select>
-                                </v-col>
-                                <v-col cols="12">
-                                    <v-text-field
-                                        label="Quantidade de cópias"
-                                        type="number"
-                                        v-model="book.amount"
-                                        append-icon="mdi-numeric"
-                                        color="#ff0025"
-                                        :rules="[rules.required, rules.minNumber]"
-                                        dark
-                                    ></v-text-field>
-                                </v-col>
-                            </v-row>
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-text-field
+                                                    label="Data de lançamento"
+                                                    append-icon="mdi-calendar"
+                                                    readonly
+                                                    v-bind="attrs"
+                                                    v-on="on"
+                                                    color="#ff0010"
+                                                    :rules="[rules.required]"
+                                                    :value="computedDateFormatted"
+                                                    dark
+                                                ></v-text-field>
+                                            </template>
+                                            <v-date-picker
+                                                v-model="date"
+                                                scrollable
+                                                locale="pt-br"
+                                                color="#ff0025"
+                                                :max="dateNow"
+                                            >
+                                                <v-spacer></v-spacer>
+                                                <v-btn text color="#ff0025" @click="$refs.dialog.save(date)">
+                                                    OK
+                                                </v-btn>
+                                            </v-date-picker>
+                                        </v-dialog>
+                                    </v-col>
+                                    <v-col cols="12">
+                                        <v-select
+                                            :items="publishers"
+                                            label="Editora"
+                                            item-text="name"
+                                            item-value="id"
+                                            v-model="book.publisherId"
+                                            :rules="[rules.required]"
+                                            dark
+                                        >
+                                        </v-select>
+                                    </v-col>
+                                    <v-col cols="12">
+                                        <v-text-field
+                                            label="Quantidade de cópias"
+                                            type="number"
+                                            v-model="book.amount"
+                                            append-icon="mdi-numeric"
+                                            color="#ff0025"
+                                            :rules="[rules.required, rules.minNumber]"
+                                            dark
+                                        ></v-text-field>
+                                    </v-col>
+                                </v-row>
+                            </v-form>
                         </v-container>
                     </v-card-text>
                     <v-card-actions>
@@ -179,87 +184,91 @@
                     </v-card-title>
                     <v-card-text>
                         <v-container>
-                            <v-row>
-                                <v-col cols="12">
-                                    <v-text-field
-                                        label="Nome do livro"
-                                        v-model="editedBook.name"
-                                        append-icon="mdi-book"
-                                        color="#ff0025"
-                                        :rules="[rules.required, rules.max, rules.min]"
-                                        :counter="30"
-                                        dark
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col cols="12">
-                                    <v-text-field
-                                        v-model="editedBook.author"
-                                        label="autor"
-                                        append-icon="mdi-account"
-                                        color="#ff0025"
-                                        :rules="[rules.required, rules.max, rules.min]"
-                                        :counter="30"
-                                        dark
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col cols="12">
-                                    <v-dialog
-                                        ref="dialog2"
-                                        :return-value.sync="date2"
-                                        persistent
-                                        width="290px"
-                                        color="#ff0025"
-                                        dark
-                                    >
-                                        <template v-slot:activator="{ on, attrs }">
-                                            <v-text-field
-                                                v-model="date2"
-                                                label="Data de lançamento"
-                                                append-icon="mdi-calendar"
-                                                readonly
-                                                v-bind="attrs"
-                                                v-on="on"
-                                                color="#ff0010"
-                                                :rules="[rules.required]"
-                                                dark
-                                            ></v-text-field>
-                                        </template>
-                                        <v-date-picker
-                                            v-model="date2"
-                                            scrollable
-                                            locale="pt-br"
+                            <v-form ref="form2" lazy-validation>
+                                <v-row>
+                                    <v-col cols="12">
+                                        <v-text-field
+                                            label="Nome do livro"
+                                            v-model="editedBook.name"
+                                            append-icon="mdi-book"
                                             color="#ff0025"
-                                            :max="date"
+                                            :rules="[rules.required, rules.max, rules.min]"
+                                            :counter="30"
+                                            dark
+                                        ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12">
+                                        <v-text-field
+                                            v-model="editedBook.author"
+                                            label="autor"
+                                            append-icon="mdi-account"
+                                            color="#ff0025"
+                                            :rules="[rules.required, rules.max, rules.min]"
+                                            :counter="30"
+                                            dark
+                                        ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12">
+                                        <v-dialog
+                                            ref="dialog2"
+                                            :return-value.sync="date2"
+                                            persistent
+                                            width="290px"
+                                            color="#ff0025"
+                                            dark
                                         >
-                                            <v-spacer></v-spacer>
-                                            <v-btn text color="#ff0025" @click="$refs.dialog2.save(date2)"> OK </v-btn>
-                                        </v-date-picker>
-                                    </v-dialog>
-                                </v-col>
-                                <v-col cols="12">
-                                    <v-select
-                                        v-model="editedBook.publisher.id"
-                                        :items="publishers"
-                                        label="Editora"
-                                        item-text="name"
-                                        item-value="id"
-                                        :rules="[rules.required]"
-                                        dark
-                                    >
-                                    </v-select>
-                                </v-col>
-                                <v-col cols="12">
-                                    <v-text-field
-                                        label="Quantidade de cópias"
-                                        type="number"
-                                        v-model="editedBook.amount"
-                                        append-icon="mdi-numeric"
-                                        color="#ff0025"
-                                        :rules="[rules.required, rules.minNumber]"
-                                        dark
-                                    ></v-text-field>
-                                </v-col>
-                            </v-row>
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-text-field
+                                                    :value="computedDateFormatted2"
+                                                    label="Data de lançamento"
+                                                    append-icon="mdi-calendar"
+                                                    readonly
+                                                    v-bind="attrs"
+                                                    v-on="on"
+                                                    color="#ff0010"
+                                                    :rules="[rules.required]"
+                                                    dark
+                                                ></v-text-field>
+                                            </template>
+                                            <v-date-picker
+                                                v-model="date2"
+                                                scrollable
+                                                locale="pt-br"
+                                                color="#ff0025"
+                                                :max="date"
+                                            >
+                                                <v-spacer></v-spacer>
+                                                <v-btn text color="#ff0025" @click="$refs.dialog2.save(date2)">
+                                                    OK
+                                                </v-btn>
+                                            </v-date-picker>
+                                        </v-dialog>
+                                    </v-col>
+                                    <v-col cols="12">
+                                        <v-select
+                                            v-model="editedBook.publisher.id"
+                                            :items="publishers"
+                                            label="Editora"
+                                            item-text="name"
+                                            item-value="id"
+                                            :rules="[rules.required]"
+                                            dark
+                                        >
+                                        </v-select>
+                                    </v-col>
+                                    <v-col cols="12">
+                                        <v-text-field
+                                            label="Quantidade de cópias"
+                                            type="number"
+                                            v-model="editedBook.amount"
+                                            append-icon="mdi-numeric"
+                                            color="#ff0025"
+                                            :rules="[rules.required, rules.minNumber]"
+                                            dark
+                                        ></v-text-field>
+                                    </v-col>
+                                </v-row>
+                            </v-form>
                         </v-container>
                     </v-card-text>
                     <v-card-actions>
@@ -335,11 +344,19 @@ export default {
     mounted() {
         this.listTable();
     },
+    computed: {
+        computedDateFormatted() {
+            return this.date ? moment(this.date).format('DD/MM/YYYY') : '';
+        },
+        computedDateFormatted2() {
+            return this.date2 ? moment(this.date2).format('DD/MM/YYYY') : '';
+        }
+    },
 
     methods: {
         listTable() {
             BookStore.getAllBooks().then((response) => {
-                console.log(response);
+                console.log(response.data.content);
                 this.books = response.data.content;
                 this.books.forEach((book) => {
                     this.dateFormated = moment(book.launchDate).subtract(1, 'months').format('DD/MM/YYYY');
@@ -353,52 +370,56 @@ export default {
         },
 
         createBook() {
-            this.date;
-            console.log(this.book);
-            this.book.launchDate = moment(this.date).format('DD/MM/YYYY');
-            BookStore.createBook(this.book)
-                .then((response) => {
-                    console.log(this.book);
-                    this.listTable();
-                    this.close();
-                    this.$swal({ title: 'Livro Cadastrado', icon: 'success', background: '#1f1f1f' });
-                })
-                .catch((e) => {
-                    console.log(e);
-                    this.$swal({
-                        title: 'Erro ao Cadastrar Livro',
-                        text: e.response.data.message,
-                        icon: 'error',
-                        background: '#1f1f1f'
+            if (this.$refs.form.validate()) {
+                this.date;
+                console.log(this.book);
+                this.book.launchDate = moment(this.date).format('DD/MM/YYYY');
+                BookStore.createBook(this.book)
+                    .then((response) => {
+                        console.log(this.book);
+                        this.listTable();
+                        this.close();
+                        this.$swal({ title: 'Livro Cadastrado', icon: 'success', background: '#1f1f1f' });
+                    })
+                    .catch((e) => {
+                        console.log(e);
+                        this.$swal({
+                            title: 'Erro ao Cadastrar Livro',
+                            text: e.response.data.message,
+                            icon: 'error',
+                            background: '#1f1f1f'
+                        });
                     });
-                });
+            }
         },
 
         updateBook() {
-            let book = {
-                name: this.editedBook.name,
-                author: this.editedBook.author,
-                launchDate: this.editedBook.launchDate,
-                amount: this.editedBook.amount,
-                publisherId: this.editedBook.publisher.id
-            };
-            this.date2;
-            book.launchDate = moment(this.date2).format('DD/MM/YYYY');
-            console.log(this.editedBook, this.editIndex);
-            BookStore.updateBook(this.editIndex, book)
-                .then((response) => {
-                    this.listTable();
-                    this.dialog2 = false;
-                    this.$swal({ title: 'livro Editado', icon: 'success', background: '#1f1f1f' });
-                })
-                .catch((e) => {
-                    this.$swal({
-                        title: 'Erro ao Editar Livro',
-                        text: e.response.data.message,
-                        icon: 'error',
-                        background: '#1f1f1f'
+            if (this.$refs.form2.validate()) {
+                let book = {
+                    name: this.editedBook.name,
+                    author: this.editedBook.author,
+                    launchDate: this.editedBook.launchDate,
+                    amount: this.editedBook.amount,
+                    publisherId: this.editedBook.publisher.id
+                };
+                this.date2;
+                book.launchDate = moment(this.date2).format('DD/MM/YYYY');
+                console.log(this.editedBook, this.editIndex);
+                BookStore.updateBook(this.editIndex, book)
+                    .then((response) => {
+                        this.listTable();
+                        this.dialog2 = false;
+                        this.$swal({ title: 'livro Editado', icon: 'success', background: '#1f1f1f' });
+                    })
+                    .catch((e) => {
+                        this.$swal({
+                            title: 'Erro ao Editar Livro',
+                            text: e.response.data.message,
+                            icon: 'error',
+                            background: '#1f1f1f'
+                        });
                     });
-                });
+            }
         },
 
         deleteBook() {
@@ -444,6 +465,7 @@ export default {
         editItem(item) {
             this.editIndex = item.id;
             this.editedBook = Object.assign({}, item);
+            this.$refs.form2.resetValidation();
         },
 
         deleteItem(item) {
@@ -462,6 +484,7 @@ export default {
                 amount: '',
                 publisherId: ''
             };
+            this.$refs.form.resetValidation();
         }
     }
 };

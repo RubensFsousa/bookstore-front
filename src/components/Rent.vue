@@ -19,6 +19,7 @@
                         </v-card-title>
                         <v-data-table
                             id="dados"
+                            sort-by="id"
                             :headers="headers"
                             :items="rents"
                             :items-per-page="5"
@@ -34,7 +35,6 @@
                                 <v-tooltip top color="#ff0010">
                                     <template v-slot:activator="{ on, attrs }">
                                         <v-btn
-                                            v-if="item.devolutionDate"
                                             color="white"
                                             v-bind="attrs"
                                             v-on="on"
@@ -87,105 +87,109 @@
                     </v-card-title>
                     <v-card-text>
                         <v-container>
-                            <v-row>
-                                <v-col cols="12">
-                                    <v-select
-                                        :items="books"
-                                        label="livro"
-                                        item-text="name"
-                                        item-value="id"
-                                        append-icon="mdi-book"
-                                        v-model="rent.bookId"
-                                        :rules="[rules.required]"
-                                        dark
-                                    ></v-select>
-                                </v-col>
-                                <v-col cols="12">
-                                    <v-select
-                                        :items="users"
-                                        label="leitor"
-                                        item-text="name"
-                                        item-value="id"
-                                        append-icon="mdi-account"
-                                        v-model="rent.userId"
-                                        :rules="[rules.required]"
-                                        dark
-                                    ></v-select>
-                                </v-col>
-                                <v-col cols="12">
-                                    <v-dialog
-                                        ref="menu"
-                                        :return-value.sync="date"
-                                        persistent
-                                        width="290px"
-                                        color="#ff0025"
-                                        dark
-                                    >
-                                        <template v-slot:activator="{ on, attrs }">
-                                            <v-text-field
+                            <v-form ref="form" lazy-validation>
+                                <v-row>
+                                    <v-col cols="12">
+                                        <v-select
+                                            :items="books"
+                                            label="livro"
+                                            item-text="name"
+                                            item-value="id"
+                                            append-icon="mdi-book"
+                                            v-model="rent.bookId"
+                                            :rules="[rules.required]"
+                                            dark
+                                        ></v-select>
+                                    </v-col>
+                                    <v-col cols="12">
+                                        <v-select
+                                            :items="users"
+                                            label="leitor"
+                                            item-text="name"
+                                            item-value="id"
+                                            append-icon="mdi-account"
+                                            v-model="rent.userId"
+                                            :rules="[rules.required]"
+                                            dark
+                                        ></v-select>
+                                    </v-col>
+                                    <v-col cols="12">
+                                        <v-dialog
+                                            ref="menu"
+                                            :return-value.sync="date"
+                                            persistent
+                                            width="290px"
+                                            color="#ff0025"
+                                            dark
+                                        >
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-text-field
+                                                    :value="computedDateFormatted"
+                                                    label="Data de aluguel"
+                                                    append-icon="mdi-calendar"
+                                                    readonly
+                                                    v-bind="attrs"
+                                                    v-on="on"
+                                                    color="#ff0010"
+                                                    :rules="[rules.required]"
+                                                    dark
+                                                ></v-text-field>
+                                            </template>
+                                            <v-date-picker
                                                 v-model="date"
-                                                label="Data de aluguel"
-                                                append-icon="mdi-calendar"
-                                                readonly
-                                                v-bind="attrs"
-                                                v-on="on"
-                                                color="#ff0010"
-                                                :rules="[rules.required]"
-                                                dark
-                                            ></v-text-field>
-                                        </template>
-                                        <v-date-picker
-                                            v-model="date"
-                                            scrollable
-                                            locale="pt-br"
+                                                scrollable
+                                                locale="pt-br"
+                                                color="#ff0025"
+                                                :max="dateNow"
+                                            >
+                                                <v-spacer></v-spacer>
+                                                <v-btn text color="#ff0025" @click="$refs.menu.save(date)"> OK </v-btn>
+                                            </v-date-picker>
+                                        </v-dialog>
+                                    </v-col>
+                                    <v-col cols="12">
+                                        <v-dialog
+                                            ref="menu2"
+                                            :return-value.sync="date2"
+                                            persistent
+                                            width="290px"
                                             color="#ff0025"
-                                            :max="dateNow"
+                                            dark
                                         >
-                                            <v-spacer></v-spacer>
-                                            <v-btn text color="#ff0025" @click="$refs.menu.save(date)"> OK </v-btn>
-                                        </v-date-picker>
-                                    </v-dialog>
-                                </v-col>
-                                <v-col cols="12">
-                                    <v-dialog
-                                        ref="menu2"
-                                        :return-value.sync="date2"
-                                        persistent
-                                        width="290px"
-                                        color="#ff0025"
-                                        dark
-                                    >
-                                        <template v-slot:activator="{ on, attrs }">
-                                            <v-text-field
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-text-field
+                                                    :value="computedDateFormatted2"
+                                                    label="Data de previsão"
+                                                    append-icon="mdi-calendar"
+                                                    readonly
+                                                    v-bind="attrs"
+                                                    v-on="on"
+                                                    color="#ff0010"
+                                                    :rules="[rules.required]"
+                                                    dark
+                                                ></v-text-field>
+                                            </template>
+                                            <v-date-picker
                                                 v-model="date2"
-                                                label="Data de previsão"
-                                                append-icon="mdi-calendar"
-                                                readonly
-                                                v-bind="attrs"
-                                                v-on="on"
-                                                color="#ff0010"
-                                                :rules="[rules.required]"
-                                                dark
-                                            ></v-text-field>
-                                        </template>
-                                        <v-date-picker
-                                            v-model="date2"
-                                            scrollable
-                                            locale="pt-br"
-                                            color="#ff0025"
-                                            :min="dateNow"
-                                        >
-                                            <v-spacer></v-spacer>
-                                            <v-btn text color="#ff0025" @click="$refs.menu2.save(date2)"> OK </v-btn>
-                                        </v-date-picker>
-                                    </v-dialog>
-                                </v-col>
-                            </v-row>
+                                                scrollable
+                                                locale="pt-br"
+                                                color="#ff0025"
+                                                :min="dateNow"
+                                            >
+                                                <v-spacer></v-spacer>
+                                                <v-btn text color="#ff0025" @click="$refs.menu2.save(date2)">
+                                                    OK
+                                                </v-btn>
+                                            </v-date-picker>
+                                        </v-dialog>
+                                    </v-col>
+                                </v-row>
+                            </v-form>
                         </v-container>
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="#ff0025" text @click="dialog = false"> Cancelar </v-btn>
+                        <v-btn color="#ff0025" text @click="close()"> Cancelar </v-btn>
                         <v-btn color="#ff0025" text @click="this.createRent"> Salvar </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -208,6 +212,8 @@ export default {
             rentDate: '',
             rentPredict: ''
         },
+
+        editedBook: {},
 
         editIndex: -1,
 
@@ -257,10 +263,18 @@ export default {
         this.listTable();
     },
 
+    computed: {
+        computedDateFormatted() {
+            return this.date ? moment(this.date).format('DD/MM/YYYY') : '';
+        },
+        computedDateFormatted2() {
+            return this.date2 ? moment(this.date2).format('DD/MM/YYYY') : '';
+        }
+    },
+
     methods: {
         listTable() {
             Rent.getAllRents().then((response) => {
-                console.log(response.data.content);
                 this.rents = response.data.content;
                 this.rents.forEach((item) => {
                     this.dateFormated1 = moment(item.rentDate).subtract(1, 'months').format('DD/MM/YYYY');
@@ -270,11 +284,9 @@ export default {
                 });
             }),
                 User.getAllUsers().then((response) => {
-                    console.log(response.data.content);
                     this.users = response.data.content;
                 }),
                 BookStore.getAllBooks().then((response) => {
-                    console.log(response.data.content);
                     this.books = response.data.content;
                 });
         },
@@ -284,27 +296,30 @@ export default {
             this.date2;
             this.rent.rentDate = moment(this.date).format('DD/MM/YYYY');
             this.rent.rentPredict = moment(this.date2).format('DD/MM/YYYY');
-            Rent.createRent(this.rent)
-                .then(() => {
-                    this.listTable();
-                    this.dialog = false;
-                    this.$swal({ title: 'Livro Alugado', icon: 'success', background: '#1f1f1f' });
-                })
-                .catch((e) => {
-                    this.$swal({
-                        title: 'erro ao alugar livro',
-                        text: e.response.data.message,
-                        icon: 'error',
-                        background: '#1f1f1f'
+            if (this.$refs.form.validate()) {
+                Rent.createRent(this.rent)
+                    .then(() => {
+                        this.listTable();
+                        this.close();
+                        this.$swal({ title: 'Livro Alugado', icon: 'success', background: '#1f1f1f' });
+                    })
+                    .catch((e) => {
+                        this.$swal({
+                            title: 'erro ao alugar livro',
+                            text: e.response.data.message,
+                            icon: 'error',
+                            background: '#1f1f1f'
+                        });
                     });
-                });
+            }
         },
         devolution() {
             Rent.devolution(this.editIndex)
                 .then(() => {
-                    this.listTable();
-                    this.dialog = false;
                     this.$swal({ title: 'Livro Devolvido', icon: 'success', background: '#1f1f1f' });
+                })
+                .finally(() => {
+                    this.listTable();
                 })
                 .catch((e) => {
                     this.$swal({
@@ -319,7 +334,6 @@ export default {
         deleteRent() {
             Rent.deleteRent(this.editIndex)
                 .then(() => {
-                    this.listTable();
                     this.$swal({ title: 'Aluguel Ecluído', icon: 'success', background: '#1f1f1f' });
                 })
                 .catch((e) => {
@@ -360,6 +374,17 @@ export default {
             this.editIndex = item.id;
             this.editedBook = Object.assign({}, item);
             this.devolution();
+        },
+
+        close() {
+            this.dialog = false;
+            this.rent = {
+                userId: '',
+                bookId: '',
+                rentDate: '',
+                rentPredict: ''
+            };
+            this.$refs.form.resetValidation();
         }
     }
 };
